@@ -1,0 +1,87 @@
+/* ST CUSTOM CSS*/
+
+.paddingBetweenCols td {
+  padding: 0 15px;
+}
+
+.paddingBetweenCols th {
+  padding: 0 15px;
+  text-align: center;
+}
+
+.plotConfigurationHeader {
+    text-align : center;
+    color      : #3c8dbc;
+    font-weight: bold;
+}
+
+.plotConfigurationHeaderSeparator {
+    border-top: 3px solid #3c8dbc;
+    margin    : auto;
+}
+
+#matrixPlotOutput {
+    overflow-x: auto;
+}
+
+/* Prevent CX toolbar from displaying in front of modals or blocking dropdown inputs */
+.CanvasXpressToolbar {
+    z-index: 900 !important;
+}
+
+input[type = "search"]:disabled {
+    visibility: hidden;
+}
+
+#announce {
+    margin-bottom: -20px;
+}
+
+.selectize-input {
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+div.selectize-dropdown, div.selectize-input {
+    overflow-wrap: break-word;
+    white-space  : normal;
+    line-break   : anywhere;
+}
+
+#stTabs li a[data-value = 'pathology'] {
+    display: none;
+}
+
+.selectize-dropdown [data-selectable], .selectize-dropdown .optgroup-header {
+    padding: 3px 12px;
+}
+
+.st-signature-selectize .selectize-dropdown-content {
+    max-height: 50vh;
+}
+
+#walkthroughBtn-button {
+    width : 52px;
+    height: 45px;
+}
+
+.fa-info-circle, .fa-circle-info {
+    font-size: 18px;
+}
+
+.tab-content {
+    margin : 0px;
+    padding: 0px;
+}
+
+.viewToggleBtn {
+    border-radius: 0px;
+}
+
+.st-pathology-box-map-hints ul {
+    padding-left: 0;
+}
+
+.st-pathology-box-map-inputs .checkbox {
+    margin-top: 0;
+}

@@ -1,0 +1,11 @@
+name: spatial_transcriptomics_dev
+title: Spatial Transcriptomics Dev (API)
+username: brettc
+account: brettc
+server: report.pri.bms.com
+hostUrl: https://report.pri.bms.com/__api__
+appId: 3224
+bundleId: 38351
+url: https://report.pri.bms.com/st10x-dev/api/
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,34 @@
+# application configuration file
+
+default:
+    display_top_n_sig_genes:    10
+    display_top_n_spot_genes:   3
+    display_dynamic_range_min:  0  # q1-q99 min allowed range - zero allows all values
+
+    files_comment_character:    "#"
+    metadata_gene_file_prefix:  "genes_"
+    metadata_signatures_file:   "signatures.txt"
+    metadata_col_type_file:     "meta_factor_col_types.txt"
+
+    clustering_name_field:      "Cluster_names"
+    clustering_color_field:     "Clustering_color_scheme"
+    pathology_name_field:       "Pathology_names"
+    pathology_color_field:      "Pathology_color_scheme"
+
+    data_mode:                  "file"
+    password_file:              "program/data/st_pub.pass"
+    pkg_min_ucell_version:      "2.2.0"
+    pkg_min_Seurat_version:     "4.2"
+    pkg_max_Seurat_version:     "5.0"
+    metadata_cache_file:        "./program/data/ST_meta_cache-PUBLIC.RDS"
+    dir_metadata_files:         "./program/data/"
+
+dev-public:
+    announcements_file:         ""
+    require_password:           TRUE
+
+
+prod-public:
+    announcements_file:         ""
+    require_password:           FALSE
+

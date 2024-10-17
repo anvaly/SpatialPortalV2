@@ -58,43 +58,42 @@ create_box_plot_cx <- function(genes_data,
             smp.annot <- data[, "Cluster", drop = FALSE]
 
             plot <- canvasXpress(
-                data                    = cx.data,
-                smpAnnot                = smp.annot,
-                backgroundType          = "solid", # overrides common config
-                stringSampleFactors     = list("Cluster"),
-                groupingFactors         = list("Cluster"),
-                graphType               = "Boxplot", # overrides common config
-                printMagnification      = 1, # overrides common config
-                showLegend              = FALSE,
-                smpLabelRotate          = 90,
-                colorBy                 = "Cluster",
-                colorKey                = list(Cluster = as.list(colors)),
-                smpTitle                = "Cluster",
-                xAxisTitle              = NULL,
-                xAxisShow               = FALSE,
-                xAxis2Show              = TRUE,
-                title                   = glue("{title} Normalized Expression"),
-                titleScaleFontFactor    = 0.5,
-                titleFontStyle          = "bold",
-                smpOverlays             = list("Cluster"),
-                showSampleNames         = FALSE,
-                smpOverlayProperties    = list(Cluster = list(thickness = overlay_width,
-                                                              rotate    = 90,
-                                                              showName  = FALSE,
-                                                              showBox   = FALSE)),
-                smpTitleScaleFontFactor = 1.5,
-                overlayColor            = "white",
-                overlayFontStyle        = "bold",
-                overlaysThickness       = 45,
-                overlayScaleFontFactor  = 3,
-                boxplotTransparency     = 1,
-                boxplotOutliersRatio    = 4,
-                xAxisTicks              = 10,
-                axisTickScaleFontFactor = 0.7,
-                boxplotBorderColor      = "black",
-                decorations             = list(line = list(list(color = "gray", x = 0))),
-                broadcast               = FALSE,
-                saveFilename            = file_name) %>% add_cx_common_config()
+                data                       = cx.data,
+                smpAnnot                   = smp.annot,
+                backgroundType             = "solid", # overrides common config
+                stringSampleFactors        = list("Cluster"),
+                groupingFactors            = list("Cluster"),
+                graphType                  = "Boxplot", # overrides common config
+                printMagnification         = 1, # overrides common config
+                showLegend                 = FALSE,
+                colorBy                    = "Cluster",
+                colorKey                   = list(Cluster = as.list(colors)),
+                smpTitle                   = "Cluster",
+                xAxisTitle                 = NULL,
+                xAxisShow                  = FALSE,
+                xAxis2Show                 = TRUE,
+                title                      = glue("{title} Normalized Expression"),
+                titleScaleFontFactor       = 0.45,
+                titleFontStyle             = "bold",
+                smpOverlays                = list("Cluster"),
+                showSampleNames            = FALSE,
+                smpOverlayProperties       = list(Cluster = list(thickness = overlay_width,
+                                                                 rotate    = 90,
+                                                                 showBox   = FALSE)),
+                showNameOverlays           = FALSE,
+                smpTitleScaleFontFactor    = 1.3,
+                overlayTextColor           = "white",
+                overlayTextFontStyle       = "bold",
+                overlayTextScaleFontFactor = 1.3,
+                overlaysThickness          = 45,
+                boxplotTransparency        = 1,
+                boxplotOutliersRatio       = 4,
+                xAxisTicks                 = 10,
+                xAxisTextScaleFontFactor   = 0.7,
+                boxplotBorderColor         = "black",
+                decorations                = list(line = list(list(color = "gray", x = 0))),
+                broadcast                  = FALSE,
+                saveFilename               = file_name) %>% add_cx_common_config()
         }
     }
 
@@ -323,49 +322,53 @@ create_dot_plot_cx <- function(genes_data,
                                                   }}")
 
                 plot <- canvasXpress(
-                    data                     = list(y = cx.mean, data2 = cx.pct),
-                    smpAnnot                 = smp.annot,
-                    graphType                = "Heatmap", # overrides common config
-                    objectBorderColor        = "black",
-                    backgroundType           = "solid", # overrides common config
-                    printMagnification       = 1, # overrides common config
-                    sizeBy                   = "Percent\nExpressed",
-                    sizes                    = c(3, seq(8, 40, by = 4)),
-                    sizeByData               = "data2",
-                    sizeByContinuous         = TRUE,
-                    colorSpectrum            = list("lightgray", "darkblue"),
-                    colorKey                 = list(Cluster = as.list(colors)),
-                    yAxisTitle               = "Cluster",
-                    xAxisTitle               = NULL,
-                    title                    = glue("{title} Normalized Expression"),
-                    titleScaleFontFactor     = 0.5,
-                    titleFontStyle           = "bold",
-                    stringSampleFactors      = list("Cluster"),
-                    smpOverlays              = list("Cluster"),
-                    smpOverlayProperties     = list(Cluster = list(thickness = overlay_width,
-                                                                   rotate    = 90,
-                                                                   showName  = FALSE,
-                                                                   showBox   = FALSE)),
-                    smpTitleScaleFontFactor  = 0.8,
-                    overlayColor             = "white",
-                    overlaysThickness        = 45,
-                    overlayFontStyle         = "bold",
-                    overlayScaleFontFactor   = 3,
-                    smpTitle                 = "Cluster",
-                    samplesClustered         = samplesClustered,
-                    showSmpDendrogram        = FALSE,
-                    variablesClustered       = ifelse(NROW(cx.mean) > 1, TRUE, FALSE),
-                    showVarDendrogram        = FALSE,
-                    varLabelRotate           = 45,
-                    varLabelFontStyle        = "bold",
-                    showSampleNames          = FALSE,
-                    showHeatmapIndicator     = TRUE,
-                    heatmapIndicatorPosition = "top",
-                    heatmapIndicatorHeight   = 15,
-                    heatmapIndicatorWidth    = 600,
-                    broadcast                = FALSE,
-                    events                   = events,
-                    saveFilename             = file_name) %>% add_cx_common_config()
+                    data                       = list(y = cx.mean, data2 = cx.pct),
+                    smpAnnot                   = smp.annot,
+                    graphType                  = "Heatmap", # overrides common config
+                    objectBorderColor          = "black",
+                    backgroundType             = "solid", # overrides common config
+                    printMagnification         = 1, # overrides common config
+                    sizeBy                     = "Percent\nExpressed",
+                    sizes                      = seq(3, 36, by = 3),
+                    sizeByData                 = "data2",
+                    sizeByContinuous           = TRUE,
+                    colorSpectrum              = list("lightgray", "darkblue"),
+                    colorKey                   = list(Cluster = as.list(colors)),
+                    yAxisTitle                 = "Cluster",
+                    xAxisTitle                 = NULL,
+                    title                      = glue("{title} Normalized Expression"),
+                    titleScaleFontFactor       = 0.45,
+                    titleFontStyle             = "bold",
+                    stringSampleFactors        = list("Cluster"),
+                    smpOverlays                = list("Cluster"),
+                    smpOverlayProperties       = list(Cluster = list(thickness = overlay_width,
+                                                                     rotate    = 90,
+                                                                     showBox   = FALSE)),
+                    showNameOverlays           = FALSE,
+                    smpTitleScaleFontFactor    = 0.7,
+                    overlayTextColor           = "white",
+
+                    overlayTextFontStyle       = "bold",
+                    overlayTextScaleFontFactor = 1.3,
+                    overlaysThickness          = 45,
+                    smpTitle                   = "Cluster",
+                    samplesClustered           = samplesClustered,
+                    showSmpDendrogram          = FALSE,
+                    variablesClustered         = ifelse(NROW(cx.mean) > 1, TRUE, FALSE),
+                    showVarDendrogram          = FALSE,
+                    varTextRotate              = 45,
+                    varTextFontStyle           = "bold",
+                    showSampleNames            = FALSE,
+                    showHeatmapIndicator       = TRUE,
+                    heatmapIndicatorPosition   = "top",
+                    heatmapIndicatorHeight     = 15,
+                    heatmapIndicatorWidth      = 600,
+                    legendTitleAlign           = "center",
+                    legendTitleMargin          = 25,
+                    marginBottom               = 30,
+                    broadcast                  = FALSE,
+                    events                     = events,
+                    saveFilename               = file_name) %>% add_cx_common_config()
             }
         }
     }
@@ -441,15 +444,18 @@ create_metadata_plot_cx <- function(plot_img_id,
                                            .open = "[[", .close = "]]"))
         }
 
-        if (is.character(meta_data[[metadata_clean]])) {
-            meta_data[[metadata_clean]] <- as.factor(meta_data[[metadata_clean]])
+        if (!is.numeric(meta_data[[metadata_clean]])) {
+            meta_data[[metadata_clean]] <- meta_data[[metadata_clean]] %>%
+                as.character() %>%
+                replace_na("NA") %>% # use "NA" string to work with the color key
+                as.factor()
         }
 
+        color_key_cx <- list()
+        legend_order <- list()
         if (length(color_key) > 0) {
-            color_key        <- list(as.list(color_key))
-            names(color_key) <- metadata_clean
-        } else {
-            color_key <- list()
+            color_key_cx[[metadata_clean]] <- as.list(color_key)
+            legend_order[[metadata_clean]] <- names(color_key)
         }
 
         var_Annot   <- meta_data
@@ -460,9 +466,10 @@ create_metadata_plot_cx <- function(plot_img_id,
             varAnnot                 = var_Annot,
             backgroundImage          = glue('javascript://{plot_img_id}'),
             colorBy                  = metadata_clean,
-            colorKey                 = color_key,
+            colorKey                 = color_key_cx,
             colorSpectrum            = COLOR_SCHEME_SPECTRUM_SCALING,
             colorSpectrumBreaks      = color_spectrum_breaks,
+            legendOrder              = legend_order,
             yAxis                    = list("imagerow"),
             xAxis                    = list("imagecol"),
             setMinX                  = max(0,   floor(min(coordinates$imagecol) - buffer_space)),
@@ -586,7 +593,7 @@ create_pathology_plot_cx <- function(plot_img_id,
             colorBy                   = "pathology",
             colorKey                  = list("pathology" = as.list(colors)),
             legendOrder               = list("pathology" = names(colors)),
-            legendBackgroundColor     = "#FFFFFF",
+            stringVariableFactors     = list("pathology"),
             title                     = title,
             subtitle                  = subtitle,
             yAxis                     = list("imagerow"),

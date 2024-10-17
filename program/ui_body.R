@@ -228,7 +228,7 @@ plotMatrixConfirmationModal <- bsModal(tags$head(tags$style("#plotMatrixConfirma
                                        ))
 
 loginModal <- bsModal(id      = "loginModal",
-                      title   = "Spatial Portal",
+                      title   = "BMS Spatial Portal for Treatment Naïve PDAC",
                       trigger = NULL,
                       size    = "small",
                       tags$head(tags$script("$(document).ready(function(){$('#loginModal').modal({backdrop: 'static', keyboard: false});});"),

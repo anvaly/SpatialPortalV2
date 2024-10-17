@@ -97,11 +97,11 @@ get_full_sample_data_objects <- function(selected_samples, all_data_objects) {
 
 
 #' get_organism_tissue
-#'   Get a character vector of organism, tissue for the selected dataset
+#'   Split the dataset selected name into organism and tissue
 #'
-#' @param datasetSel - currently selected dataset
+#' @param datasetSel - dataset name with the REGEX_ORGANISM_TISSUE_SEP
 #'
-#' @return character
+#' @return character vector
 get_organism_tissue <- function(datasetSel) {
     str_split(datasetSel, pattern = REGEX_ORGANISM_TISSUE_SEP) %>% unlist()
 }
@@ -289,44 +289,6 @@ get_sample_signals <- function(st_ids, all_data_objects, signatures = NULL, gene
 }
 
 
-#' get_all_selected_spots
-#'     Helper function to get all selected spots given a list of one or more spots
-#'
-#' @param selected_point_ids  - IDs for selected spots (one or more)
-#' @param full_coordinates    - the coordinates data frame for the sample (NOT FILTERED)
-#'                            - rownames: IDs
-#'                            - columns: imagerow, imagecol
-#'
-#' @return list of spot IDs or NULL
-get_all_selected_spots <- function(selected_point_ids, full_coordinates) {
-    result <- NULL
-
-    if (NROW(selected_point_ids) == 0 || (NROW(full_coordinates) == 0)) {
-        # error
-        #TODO
-    } else if (NROW(selected_point_ids) == 1) {
-        # expand size to a default minimum
-        #TODO
-        warning('single spot not yet implemented, returning NULL')
-    } else {
-        sel_spots <- full_coordinates %>%
-            rownames_to_column('spot_id') %>%
-            filter(spot_id %in% selected_point_ids)
-
-        all_sel_spots <- full_coordinates %>%
-            filter(imagerow >= min(sel_spots$imagerow) & imagerow <= max(sel_spots$imagerow),
-                   imagecol >= min(sel_spots$imagecol) & imagecol <= max(sel_spots$imagecol)) %>%
-            rownames()
-
-        if (NROW(all_sel_spots) > 0) {
-            result <- all_sel_spots
-        }
-    }
-
-    result
-}
-
-
 #' read_about
 #'   Read HTML content for "About This Application" box in the UI
 #'
@@ -351,9 +313,9 @@ read_metadata_column_control <- function(samples_df) {
     if (NROW(samples_df) > 0) {
         if (file.exists(metadata_columns_file)) {
             data <- suppressMessages(read_tsv(metadata_columns_file,
-                                                col_types = "cc",
-                                                trim_ws   = TRUE,
-                                                comment   = get_env_value("files_comment_character"))) %>%
+                                              col_types = "cc",
+                                              trim_ws   = TRUE,
+                                              comment   = get_env_value("files_comment_character"))) %>%
                 mutate(Column_Name_Lower = tolower(Column_Name),
                        Type              = tolower(Type)) %>%
                 filter(Column_Name_Lower != "sample_app_name") # avoid showing the Sample_App_Name

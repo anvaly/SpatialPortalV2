@@ -31,8 +31,8 @@ application_config_check <- function() {
         ## use global environment variable .GlobalEnv for assigning values to global variables only
         ## as it is safer from using "<<-" and shorter than using "assign" function
         ## no need to use it upon global variables values retrieval
-        .GlobalEnv$g_display_top_n_sig_genes   <- get_top_genes(top_gene_config_var = "display_top_n_sig_genes", default_value = 10)
-        .GlobalEnv$g_display_top_n_spot_genes  <- get_top_genes(top_gene_config_var = "display_top_n_spot_genes", default_value = 3)
+        .GlobalEnv$g_display_top_n_sig_genes   <- get_top_genes_config_val(top_gene_config_var = "display_top_n_sig_genes", default_value = 10)
+        .GlobalEnv$g_display_top_n_spot_genes  <- get_top_genes_config_val(top_gene_config_var = "display_top_n_spot_genes", default_value = 3)
         .GlobalEnv$g_display_dynamic_range_min <- get_numeric_config_vars(config_var = "display_dynamic_range_min", default_value = 0)
 
         # perform other section specific configurations check if all common configurations are correct
@@ -40,7 +40,8 @@ application_config_check <- function() {
             #ALL Configurations
             tryCatch({
                 ucell_pkg_check_result <- check_package_version(package_name = "UCell",
-                                                                min_version  = get_env_value("pkg_min_ucell_version"))
+                                                                min_version  = get_env_value("pkg_min_ucell_version"),
+                                                                max_version  = get_env_value("pkg_max_ucell_version"))
                 if (ucell_pkg_check_result) {
                     suppressPackageStartupMessages({
                         library(UCell)
@@ -71,10 +72,15 @@ application_config_check <- function() {
                                                                       min_version  = get_env_value("pkg_min_Seurat_version"),
                                                                       max_version  = get_env_value("pkg_max_Seurat_version"))
 
-                    if (seurat_pkg_check_result) {
-                        suppressPackageStartupMessages({
-                            library(Seurat)
-                        })
+                     seurat_obj_pkg_check_result <- check_package_version(package_name = "SeuratObject",
+                                                                          max_version = get_env_value("pkg_max_SeuratObject_version"))
+
+                     seurat_pkg_check_result <- seurat_pkg_check_result && seurat_obj_pkg_check_result
+
+                     if (seurat_pkg_check_result) {
+                         suppressPackageStartupMessages({
+                             library(Seurat)
+                         })
                     }
                 },
                 error = function(e) {
@@ -279,7 +285,7 @@ check_package_version <- function(package_name,
 
         if (valid_min) {
             if (is.null(max_version) ||
-                (compareVersion(max_version, package_version) == 1)) {
+                (compareVersion(max_version, package_version) >= 0)) {
                 valid_max <- TRUE
             } else {
                 warning(glue("{package_name} package version '{package_version}' is greater than or equal the maximum required '{max_version}'"))
@@ -293,14 +299,14 @@ check_package_version <- function(package_name,
 }
 
 
-#' get_top_genes
+#' get_top_genes_config_val
 #'   Parses top gene config character value to proper integer value
 #'
 #' @param top_gene_config_var - either 'display_top_n_spot_genes' or 'display_top_n_sig_genes'
 #' @param default_value       - default value to use if the config variable cannot be parsed as a positive integer or zero
 #'
 #' @return integer
-get_top_genes <- function(top_gene_config_var, default_value) {
+get_top_genes_config_val <- function(top_gene_config_var, default_value) {
     suppressWarnings({ top_n_genes <- as.integer(get_env_value(top_gene_config_var)) })
     if ((length(top_n_genes) == 0) ||
         is.na(top_n_genes) ||

@@ -142,8 +142,8 @@ add_cx_small_chart_config <- function(cx_plot) {
                      showLegend                = TRUE,
                      colorByShowLegend         = TRUE,
                      showLegendTitle           = FALSE,
-                     titleScaleFontFactor      = 0.8,
-                     legendTextScaleFontFactor = 0.6)
+                     titleScaleFontFactor      = 0.9,
+                     legendTextScaleFontFactor = 0.7)
 }
 
 
@@ -186,6 +186,9 @@ add_cx_common_config <- function(cxObject) {
             noValidate               = TRUE,
             printMagnification       = 3,
             selectionColor           = "#000000",
+            legendBackgroundColor    = "#FFFFFF",
+            titleAlign               = "center",
+            subtitleAlign            = "center",
 
             zoomDisable              = TRUE,
             disableWheel             = TRUE,
@@ -308,10 +311,15 @@ build_plot_color_scheme <- function(color_string, data_groups) {
     }, silent = T)
 
     if (is.null(colors)) {
-        data_groups   <- str_sort(data_groups, numeric = TRUE)
+        object_colors <- FALSE
+        has_na        <- any(is.na(data_groups))
+        data_groups   <- str_sort(data_groups[!is.na(data_groups)], numeric = TRUE)
         colors        <- generated_colors(length(data_groups))
         names(colors) <- unique(data_groups)
-        object_colors <- FALSE
+
+        if (has_na) {
+            colors <- c(colors, c("NA" = MISSING_DATA_COLOR))
+        }
     }
 
     list(colors = colors, object_colors = object_colors)
@@ -351,21 +359,25 @@ get_all_spots_colors <- function(coordinates,
     spot_colors <- NULL
 
     if ((NROW(coordinates) > 0) && (NROW(plot_data) > 0)) {
-        if (!is.null(color_key)) {
+        spot_colors <- coordinates %>%
+            mutate(color = NA_character_)
+
+        if (length(color_key) > 0) {
             # use color key for categorical data
             color_key_df <- data.frame(value = names(color_key),
                                        color = color_key)
 
             plot_data <- plot_data %>%
                 rownames_to_column(var = "spot_id") %>%
-                mutate(value = as.character(.data[[column_name]])) %>%
+                mutate(value = replace_na(as.character(.data[[column_name]]), "NA")) %>%
                 select(spot_id, value)
 
             spot_colors <- coordinates %>%
                 rownames_to_column(var = "spot_id") %>%
                 left_join(plot_data, by = "spot_id") %>%
                 left_join(color_key_df, by = "value")
-        } else if (is.numeric(plot_data[[column_name]]) && !is.null(color_spectrum_breaks)) {
+        } else if (is.numeric(plot_data[[column_name]]) &&
+                   (length(color_spectrum_breaks) > 0)) {
             # use color spectrum for numeric data
             plot_data <- plot_data %>%
                 rownames_to_column(var = "spot_id") %>%
@@ -374,8 +386,9 @@ get_all_spots_colors <- function(coordinates,
                        setNames(column_name, nm = "signal"),
                        color)
 
-            min_break <- min(color_spectrum_breaks)
-            max_break <- max(color_spectrum_breaks)
+            min_break      <- min(color_spectrum_breaks)
+            max_break      <- max(color_spectrum_breaks)
+            color_spectrum <- COLOR_SCHEME_SPECTRUM_SCALING
 
             if (!is.na(min_break) && !is.na(max_break) && (max_break > min_break)) {
                 plot_data <- plot_data %>%
@@ -384,7 +397,8 @@ get_all_spots_colors <- function(coordinates,
                                                       TRUE               ~ signal),
                            scaled_signal = (trimmed_signal - min(trimmed_signal, na.rm = TRUE)) / (max_break - min_break))
             } else {
-                plot_data <- plot_data %>%
+                color_spectrum <- c("#000000", "#000000")
+                plot_data      <- plot_data %>%
                     mutate(scaled_signal = signal)
             }
 
@@ -393,7 +407,7 @@ get_all_spots_colors <- function(coordinates,
 
             tryCatch({
                 colors_df1 <- colors_df1 %>%
-                    mutate(color = rgb(colorRamp(COLOR_SCHEME_SPECTRUM_SCALING)(scaled_signal), maxColorValue = 255))
+                    mutate(color = rgb(colorRamp(color_spectrum)(scaled_signal), maxColorValue = 255))
             },
             warning = function(w) {
                 warning(w$message)
@@ -420,4 +434,56 @@ get_all_spots_colors <- function(coordinates,
     }
 
     spot_colors
+}
+
+
+#' get_all_selected_spots
+#'     Helper function to get all selected spots in a rectangular area given a list of one or more spots
+#'
+#' @param selected_point_ids  - IDs for selected spots (one or more)
+#' @param full_coordinates    - the coordinates data frame for the sample (NOT FILTERED)
+#'                            - columns: spot_id, imagerow, imagecol (others are ignored)
+#' @param spot_diameter       - The spot diameter
+#'
+#' @return list of spot_ids or NULL
+get_all_selected_spots <- function(selected_point_ids, full_coordinates, spot_diameter) {
+    result <- NULL
+
+    if (NROW(selected_point_ids) == 0 || (NROW(full_coordinates) == 0)) {
+        warning('There were no selected points or the coordinates are missing')
+    } else if (NROW(selected_point_ids) == 1) {
+        # expand size to ~9-12 spots in a full spot area
+        spot <- full_coordinates %>%
+            filter(spot_id %in% selected_point_ids)
+
+        expand_coef <- 2.5
+
+        inclusive_coord_row <- c(max(spot$imagerow - expand_coef*spot_diameter, 0), spot$imagerow + expand_coef*spot_diameter)
+        inclusive_coord_col <- c(max(spot$imagecol - expand_coef*spot_diameter, 0), spot$imagecol + expand_coef*spot_diameter)
+
+        all_sel_spots <- full_coordinates %>%
+            filter(imagerow >= min(inclusive_coord_row) & imagerow <= max(inclusive_coord_row),
+                   imagecol >= min(inclusive_coord_col) & imagecol <= max(inclusive_coord_col)) %>%
+            pull(spot_id)
+
+        if (NROW(all_sel_spots) > 0) {
+            result <- all_sel_spots
+        } else {
+            result <- spot$spot_id
+        }
+    } else {
+        sel_spots <- full_coordinates %>%
+            filter(spot_id %in% selected_point_ids)
+
+        all_sel_spots <- full_coordinates %>%
+            filter(imagerow >= min(sel_spots$imagerow) & imagerow <= max(sel_spots$imagerow),
+                   imagecol >= min(sel_spots$imagecol) & imagecol <= max(sel_spots$imagecol)) %>%
+            pull(spot_id)
+
+        if (NROW(all_sel_spots) > 0) {
+            result <- all_sel_spots
+        }
+    }
+
+    result
 }

@@ -43,8 +43,8 @@ get_message_text <- function(message_name, message_parameters = list()) {
             extended_dot_plot_zero_variance        = "There is zero variance in the data so the plot cannot be created",
             pathology_select_spatial_points        = "Select one or more points on the spatial chart to the left<br/> then press the &quot;Get Pathology Image&quot; button below",
             pathology_tissue_area                  = "The tissue area shown will be a rectangular area<br/> around the outer bounds of all selected points",
-            pathology_image_size                   = "Images are reduced from maximum resolution for screen viewing. Download the image for a larger version.",
-            pathology_maximum_spots                = "The maximum number of spots allowed in a selection is {value} for performance reasons. Larger selections take significantly longer to render and download.",
+            pathology_image_size                   = "Images are reduced from maximum resolution for screen viewing. <br/>Download the image for a larger version.",
+            pathology_maximum_spots                = "The maximum number of spots allowed in a selection is {value} for performance reasons.<br/>Larger selections take significantly longer to render and download.",
             pathology_hints                        = "<div>Helpful Hints:<br/>
                                                       <ul>
                                                           <li>Click to select a single point</li>
@@ -52,7 +52,7 @@ get_message_text <- function(message_name, message_parameters = list()) {
                                                           <li>Hold shift while dragging to select an area of points</li>
                                                       </ul></div>",
             pathology_no_points_selected           = "There are no points selected in the chart to the left.<br/>Select one or more points to define the pathology area.",
-            pathology_sel_max_points_exceeded      = "The selected area contains more than {value} points. Please select a smaller area of points.",
+            pathology_sel_max_points_exceeded      = "The selected area contains more than {value} points.<br/>Please select a smaller area of points.",
             pathology_image_retrieval_error        = "Unable to retrieve the requested image."
             )
 

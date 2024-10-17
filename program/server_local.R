@@ -121,6 +121,16 @@ user_samples <- reactive({
     all_samples
 })
 
+pathology_user_samples <- reactive({
+    data <- NULL
+
+    if ("PATHOLOGY_TAB_READY" %in% colnames(user_samples())) {
+        data <- filter(user_samples(), PATHOLOGY_TAB_READY)
+    }
+
+    data
+})
+
 matrix_gene_choices <- reactive({
     read_organism_and_probes_genes(
         samples           = user_samples(),
@@ -266,7 +276,7 @@ add_pathology_box <- function(cloned_box_source_id = NULL) {
                          genes_choices         = box_gene_choices(),
                          signature_choices     = sg_signature_choices,
                          signatures            = sg_signatures,
-                         samples               = user_samples(),
+                         samples               = pathology_user_samples(),
                          st_objects            = user_st_objects,
                          custom_signatures     = userSel$custom_signatures,
                          selected_dataset      = datasetSel,
@@ -391,7 +401,14 @@ if (g_configuration == "dev-online") {
 
 #### Initialization Only ####
 observeEvent(TRUE, {
-    if (as.logical(get_env_value('show_pathology_tab', unset = FALSE))) {
+    show_pathology_tab      <- as.logical(get_env_value('show_pathology_tab', unset = FALSE))
+    pathology_samples_exist <- (NROW(pathology_user_samples()) > 0)
+
+    if (show_pathology_tab && !pathology_samples_exist) {
+        logwarn("There are no available samples for pathology tab. Disabling pathology tab")
+    }
+
+    if (show_pathology_tab && pathology_samples_exist) {
         shinyjs::runjs("$('#stTabs li a[data-value=pathology]').css('display', 'block')");
         add_pathology_box()
     }
@@ -406,7 +423,7 @@ observeEvent(TRUE, {
         inputId  = "matrixOrganismTissueSel",
         server   = TRUE,
         choices  = get_unique_organism_tissue(user_samples()),
-        selected = get_unique_organism_tissue(user_samples())[1],
+        selected = get_unique_organism_tissue(user_samples())[[1]],
         options  = list(placeholder   = PLACE_HOLDER_SELECTIZE_INPUTS ,
                         optgroupField = "Organism",
                         labelField    = "Organism_Tissue",

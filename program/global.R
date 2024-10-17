@@ -33,7 +33,7 @@ options(dplyr.summarise.inform = FALSE)
 plan("future::multisession")
 
 
-set_app_parameters(title       = "Spatial Portal",
+set_app_parameters(title       = "BMS Spatial Portal for Treatment Naïve PDAC",
                    titleinfo   = NULL,
                    loglevel    = "DEBUG",
                    showlog     = FALSE,

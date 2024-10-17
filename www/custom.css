@@ -85,3 +85,14 @@ div.selectize-dropdown, div.selectize-input {
 .st-pathology-box-map-inputs .checkbox {
     margin-top: 0;
 }
+
+.concentriq-error-message {
+    height: 60px;
+    margin-top: 25px;
+    display: grid;
+    align-content: center;
+    text-align: center;
+    color: #EE4B2B;
+    font-weight: bold;
+    font-size: large;
+}

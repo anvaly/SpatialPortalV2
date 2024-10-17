@@ -224,9 +224,15 @@ get_seurat_top_represented_genes <- function(data, assay = SEURAT_ASSAY){
 get_seurat_spot_diameter <- function(seurat, sample_name) {
     spot_diameter <- NULL
 
-    try({
+    tryCatch({
         spot_diameter <- seurat@images[[sample_name]]@scale.factors$spot_diameter_fullres
-    }, silent = TRUE)
+    },
+    warning = function(w) {
+        message(glue("Unable to get spot diameter for sample '{sample_name}' due to: {w$message}"))
+    },
+    error = function(e) {
+        message(glue("Unable to get spot diameter for sample '{sample_name}' due to: {e$message}"))
+    })
 
     spot_diameter
 }
@@ -242,9 +248,15 @@ get_seurat_spot_diameter <- function(seurat, sample_name) {
 get_seurat_image_full_coordinates <- function(seurat, sample_name) {
     full_coords <- NULL
 
-    try({
+    tryCatch({
         full_coords <- seurat@images[[sample_name]]@coordinates
-    }, silent = TRUE)
+    },
+    warning = function(w) {
+        message(glue("Unable to get full coordinates for sample '{sample_name}' due to: {w$message}"))
+    },
+    error = function(e) {
+        message(glue("Unable to get full coordinates for sample '{sample_name}' due to: {e$message}"))
+    })
 
     full_coords
 }

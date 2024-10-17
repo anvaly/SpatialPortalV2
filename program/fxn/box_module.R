@@ -73,7 +73,7 @@ update_dataset_selectized_input <- function(session, samples, selected_dataset =
         session  = session,
         inputId  = "datasetSel",
         server   = TRUE,
-        selected = selected_dataset,
+        selected = choices[[1]],
         choices  = choices,
         options  = list(placeholder   = PLACE_HOLDER_SELECTIZE_INPUTS ,
                         optgroupField = "Organism",

@@ -30,8 +30,8 @@ get_cached_metadata <- function() {
 get_file_metadata_table <- function(samples_data, metadata_cols, smp_id, type) {
     metadata_table <- data.frame()
 
-    parsed_all_other_metadata <- parse_all_other_meta_col(samples_data = samples_data,
-                                                          sample_id    = smp_id)
+    parsed_all_other_metadata <- get_all_other_metadata(samples_data = samples_data,
+                                                        sample_id    = smp_id)
 
     if (NROW(samples_data) > 0) {
         #Determine which fields we need
@@ -87,14 +87,14 @@ get_file_metadata_table <- function(samples_data, metadata_cols, smp_id, type) {
 }
 
 
-#' parse_all_other_meta_col
+#' get_all_other_metadata
 #'    - Parses the all other metadata column into a data frame
 #'
 #' @param samples_data - the sample metadata cache table
 #' @param sample_id    - the sample id
 #'
 #' @return the ALL_OTHER_METADATA column as a table
-parse_all_other_meta_col <- function(samples_data, sample_id) {
+get_all_other_metadata <- function(samples_data, sample_id) {
     result <- NULL
     if ((NROW(samples_data) > 0)  &&
         !is.null(sample_id) &&
